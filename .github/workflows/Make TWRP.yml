@@ -74,7 +74,7 @@ jobs:
         mka vendorbootimage -j$(nproc --all)
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: rubens_twrp-13
         path: workspace/out/target/product/rubens/vendor_boot.img
