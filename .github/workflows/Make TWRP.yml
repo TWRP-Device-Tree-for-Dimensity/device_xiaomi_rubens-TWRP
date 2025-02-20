@@ -17,18 +17,18 @@ jobs:
         sudo apt -y autoclean
         sudo apt clean
 
-    - name: Free Disk Space Before Build
-      run: |
-        echo "Disk space before cleanup:"
-        df -h
-        sudo rm -rf /usr/local/.ghcup
-        sudo rm -rf /opt/hostedtoolcache/CodeQL
-        sudo rm -rf /usr/local/lib/android/sdk/ndk
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /opt/ghc
-        sudo rm -rf /usr/local/share/boost
-        echo "Disk space after cleanup:"
-        df -h
+    # - name: Free Disk Space Before Build
+    #   run: |
+    #     echo "Disk space before cleanup:"
+    #     df -h
+    #     sudo rm -rf /usr/local/.ghcup
+    #     sudo rm -rf /opt/hostedtoolcache/CodeQL
+    #     sudo rm -rf /usr/local/lib/android/sdk/ndk
+    #     sudo rm -rf /usr/share/dotnet
+    #     sudo rm -rf /opt/ghc
+    #     sudo rm -rf /usr/local/share/boost
+    #     echo "Disk space after cleanup:"
+    #     df -h
   
     - name: Maximize Build Space
       uses: easimon/maximize-build-space@master
