@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Remove Useless Package
@@ -16,13 +16,30 @@ jobs:
         sudo apt -y autoremove --purge
         sudo apt -y autoclean
         sudo apt clean
+
+    - name: Free Disk Space Before Build
+      run: |
+        echo "Disk space before cleanup:"
+        df -h
+        sudo rm -rf /usr/local/.ghcup
+        sudo rm -rf /opt/hostedtoolcache/CodeQL
+        sudo rm -rf /usr/local/lib/android/sdk/ndk
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /opt/ghc
+        sudo rm -rf /usr/local/share/boost
+        echo "Disk space after cleanup:"
+        df -h
+  
     - name: Maximize Build Space
       uses: easimon/maximize-build-space@master
       with:
+        root-reserve-mb: 4096
         swap-size-mb: 8192
         remove-dotnet: 'true'
         remove-android: 'true'
         remove-haskell: 'true'
+        remove-codeql: 'true'
+        remove-docker-images: 'true'
 
     - name: Check Out
       uses: actions/checkout@main
@@ -32,12 +49,15 @@ jobs:
 
     - name: Prepare Environment
       run: |
+        df -h
         export HOME=${GITHUB_WORKSPACE}
         cd ${GITHUB_WORKSPACE}
         sudo apt -y install git aria2 
         git clone https://gitlab.com/OrangeFox/misc/scripts
+        df -h
         cd scripts
         sudo bash setup/android_build_env.sh
+        df -h
         sudo bash setup/install_android_sdk.sh || true
 
     - name: Init Repo
@@ -74,7 +94,7 @@ jobs:
         mka vendorbootimage -j$(nproc --all)
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: rubens_twrp-13
         path: workspace/out/target/product/rubens/vendor_boot.img
